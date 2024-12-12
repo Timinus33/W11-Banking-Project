@@ -1,24 +1,20 @@
 package entities;
 
-import utilities.AccountUtilities;
-
-import static utilities.AccountUtilities.validateUsername;
+import java.util.Objects;
 
 public abstract class User {
     private static int NEXT_ID = 1;
 
-    private final int userId;
-    private String username;
+    private final String userId;
+    private final String username;
     private String password;
+    private final String pinCode;
 
-    public User(String username, String password) {
-        this.userId = NEXT_ID++;
+    public User(String username, String password, String pinCode) {
+        this.userId = String.valueOf(NEXT_ID++);
         this.username = username;
         this.password = password;
-    }
-
-    public String getUsername() {
-        return username;
+        this.pinCode = pinCode;
     }
 
     @Override
@@ -27,6 +23,44 @@ public abstract class User {
                 "userId=" + userId +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
+                ", pinCode=" + pinCode +
                 '}';
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void resetPassword(String currentPassword, String newPassword) {
+        if (this.password.equals(currentPassword)) {
+            if (newPassword != null && !newPassword.isBlank() && newPassword.length() >= 6) {
+                this.password = newPassword;
+                System.out.println("Password successfully updated! New password is " + this.password + "\n");
+            } else {
+                System.out.println("Failed to process the new password!\n");
+            }
+        } else {
+            System.out.println("Failed! Incorrect current password!\n");
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(getUserId(), user.getUserId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getUserId());
     }
 }

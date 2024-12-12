@@ -1,18 +1,21 @@
 package entities;
 
-import static utilities.AccountUtilities.validateName;
-import static utilities.AccountUtilities.validateUsername;
+import java.util.HashMap;
+
+import static utilities.Utils.parseDepositValues;
 
 public class Account extends User {
-    private String firstName;
-    private String lastName;
+    public static final HashMap<String, Account> accounts = new HashMap<>();
+
+    private final String firstName;
+    private final String lastName;
 
     private double balance;
-    private double depositLimit;
-    private double withdrawLimit;
+    private final double depositLimit;
+    private final double withdrawLimit;
 
-    public Account(String username, String password, String firstName, String lastName, String balance, String depositLimit, String withdrawLimit) {
-        super(username, password);
+    public Account(String username, String password, String pinCode, String firstName, String lastName, String balance, String depositLimit, String withdrawLimit) {
+        super(username, password, pinCode);
         this.firstName = firstName;
         this.lastName = lastName;
         this.balance = Double.parseDouble(balance);
@@ -20,9 +23,37 @@ public class Account extends User {
         this.withdrawLimit = Double.parseDouble(withdrawLimit);
     }
 
+    public void deposit(String amount) {
+        if (parseDepositValues(amount)) {
+            double value = Double.parseDouble(amount);
+            if (value <= this.depositLimit) {
+                this.balance += value;
+                System.out.println(value + " added!\n");
+            } else {
+                System.out.println("Failed to deposit! The amount is over the limit!\n");
+            }
+        } else {
+            System.out.println("Invalid amount entered!\n");
+        }
+    }
+
+    public void withdraw(String amount) {
+        if (parseDepositValues(amount)) {
+            double value = Double.parseDouble(amount);
+            if (value <= this.depositLimit) {
+                this.balance -= value;
+                System.out.println(value + " subtracted!\n");
+            } else {
+                System.out.println("Failed to withdraw! The amount is over the limit!\n");
+            }
+        } else {
+            System.out.println("Invalid amount entered!\n");
+        }
+    }
+
     @Override
     public String toString() {
-        return "entities.Account{" +
+        return "Account{" +
                 "firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", balance=" + balance +
@@ -30,4 +61,18 @@ public class Account extends User {
                 ", withdrawLimit=" + withdrawLimit +
                 "} " + super.toString();
     }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public double getDepositLimit() {
+        return depositLimit;
+    }
+
+    public double getWithdrawLimit() {
+        return withdrawLimit;
+    }
+
+
 }
