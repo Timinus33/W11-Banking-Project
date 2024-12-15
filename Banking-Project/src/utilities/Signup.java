@@ -2,6 +2,7 @@ package utilities;
 
 import entities.Account;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import static entities.Account.accounts;
@@ -9,9 +10,9 @@ import static utilities.Utils.*;
 
 public class Signup {
 
-    public static boolean validateUsername(HashMap<String, Account> accounts, String username) {
+    public static boolean validateUsername(ArrayList<Account> accounts, String username) {
         if (username != null && !username.isBlank()) {
-            if (accounts.containsKey(username)) {
+            if (Login.findUser(username, false) != null) {
                 System.out.print("This username already exists! Please enter another name: ");
                 return true;
             } else {
@@ -116,7 +117,7 @@ public class Signup {
             withdrawLimit = scanner.nextLine();
         } while (validateBalanceLimit(withdrawLimit));
 
-        accounts.put(username, signUp(username, password, pinCode, firstName, lastName, initialDepositAmount, depositLimit, withdrawLimit));
+        accounts.add(signUp(username, password, pinCode, firstName, lastName, initialDepositAmount, depositLimit, withdrawLimit));
         System.out.println("You have successfully signed up! Now please log in.\n");
         displayLoginMenu();
     }

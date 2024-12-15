@@ -2,7 +2,7 @@ package utilities;
 
 import entities.Account;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 
 import static entities.Account.accounts;
 import static utilities.Utils.*;
@@ -13,7 +13,7 @@ public class Login {
         String username = scanner.nextLine();
         System.out.print("Please enter your password: ");
         String password = scanner.nextLine();
-        currentUser = findUser(accounts, username, password);
+        currentUser = findUserByName(username, password);
         if (currentUser != null) {
             displayUserMenu();
         } else {
@@ -21,16 +21,34 @@ public class Login {
         }
     }
 
-    public static Account findUser(HashMap<String, Account> accounts, String username, String password) {
-        if (accounts.containsKey(username)) {
-            if (accounts.get(username).getPassword().equals(password)) {
+    public static Account findUserByName(String username, String password) {
+        Account account = findUser(username, false);
+        if (account != null) {
+            if (account.getPassword().equals(password)) {
                 System.out.println("Successfully logged in!\n");
-                return accounts.get(username);
+                return account;
             } else {
                 System.out.println("wrong password\n");
             }
         } else {
             System.out.println("username not found\n");
+        }
+        return null;
+    }
+
+    public static Account findUser(String id, boolean searchById) {
+        if (searchById) {
+            for (Account account : accounts) {
+                if (account.getUserId().equals(id)) {
+                    return account;
+                }
+            }
+        } else {
+            for (Account account : accounts) {
+                if (account.getUsername().equals(id)) {
+                    return account;
+                }
+            }
         }
         return null;
     }
