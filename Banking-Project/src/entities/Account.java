@@ -3,7 +3,7 @@ package entities;
 import java.util.ArrayList;
 
 import static utilities.Login.findUser;
-import static utilities.Utils.parseDepositValues;
+import static utilities.Utils.*;
 
 public class Account extends User {
     public static final ArrayList<Account> accounts = new ArrayList<>();
@@ -24,12 +24,12 @@ public class Account extends User {
         this.withdrawLimit = Double.parseDouble(withdrawLimit);
     }
 
-    public void deposit(String amount) {
+    public void deposit(String amount, double depositLimit) {
         if (parseDepositValues(amount)) {
             double value = Double.parseDouble(amount);
-            if (value <= this.depositLimit) {
+            if (value <= depositLimit) {
                 this.balance += value;
-                System.out.println(value + " added!\n");
+                System.out.println("Success\n");
             } else {
                 System.out.println("Failed to deposit! The amount is over the limit!\n");
             }
@@ -38,12 +38,11 @@ public class Account extends User {
         }
     }
 
-    public void withdraw(String amount) {
+    public void withdraw(String amount, double withdrawLimit) {
         if (parseDepositValues(amount)) {
             double value = Double.parseDouble(amount);
-            if (value > this.depositLimit) {
+            if (value <= this.balance && value <= withdrawLimit) {
                 this.balance -= value;
-                System.out.println(value + " subtracted!\n");
             } else {
                 System.out.println("Failed to withdraw! The amount is over the limit!\n");
             }
@@ -77,13 +76,33 @@ public class Account extends User {
 
     public void transfer(String id, String amount) {
         Account account = findUser(id, true);
-        if (parseDepositValues(amount)) {
-            if (account != null) {
-                System.out.println("Transferring " + amount + " to " + account.getUsername());
-                withdraw(amount);
-                account.deposit(amount);
-                System.out.println("Successfully transfered!");
+        if (account != null) {
+            if (this.equals(account)) {
+                System.out.println("You cannot transfer money to yourself! Please try again.\n");
+            } else if (parseDepositValues(amount)) {
+                if (Double.parseDouble(amount) > getBalance()) {
+                    System.out.println("Error! Insufficient funds on your bank account. Please try again.\n");
+                } else {
+                    System.out.println("Transferring " + amount + " to " + account.getUsername() + "...");
+                    withdraw(amount, Double.MAX_VALUE);
+                    account.deposit(amount, Double.MAX_VALUE);
+                }
+            } else {
+                System.out.println("Transaction failed! Reason: invalid amount of money.\n");
             }
+        } else {
+            System.out.println("Transaction failed! Reason: recipient id not found\n");
+        }
+    }
+
+    public boolean authenticateRequest() {
+        System.out.print("Please enter your pin code: ");
+        String pinCode = scanner.nextLine();
+        if (pinCode.equals(currentUser.getPinCode())) {
+            return true;
+        } else {
+            System.out.println("Incorrect pin code! Please try again.\n");
+            return false;
         }
     }
 }

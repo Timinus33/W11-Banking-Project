@@ -26,7 +26,7 @@ public class Signup {
     }
 
     public static boolean validatePassword(String password) {
-        if (password != null && password.length() >= 6) {
+        if (password != null && !password.isBlank() && password.length() >= 6) {
             System.out.println("password -> " + password);
             return false;
         } else {

@@ -21,7 +21,7 @@ public class Login {
         }
     }
 
-    public static Account findUserByName(String username, String password) {
+    private static Account findUserByName(String username, String password) {
         Account account = findUser(username, false);
         if (account != null) {
             if (account.getPassword().equals(password)) {

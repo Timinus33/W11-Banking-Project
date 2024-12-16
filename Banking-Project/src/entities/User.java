@@ -39,6 +39,10 @@ public abstract class User {
         return password;
     }
 
+    public String getPinCode() {
+        return pinCode;
+    }
+
     public void resetPassword(String currentPassword, String newPassword) {
         if (this.password.equals(currentPassword)) {
             if (newPassword != null && !newPassword.isBlank() && newPassword.length() >= 6) {
