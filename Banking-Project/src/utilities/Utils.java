@@ -2,10 +2,10 @@ package utilities;
 
 import entities.Account;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
-import static utilities.Login.findUser;
-import static utilities.Login.login;
+import static utilities.Login.*;
 import static utilities.Signup.signUp;
 
 
@@ -46,7 +46,12 @@ public class Utils {
                     signUp();
                     break;
                 case 2:
-                    login();
+                    if (isIsLoginAvailable()) {
+                        login();
+                    } else {
+                        System.out.println("Login process blocked! Try again at " + getRemainingTime().format(DateTimeFormatter.ofPattern("dd\\MM\\yyyy HH:mm\n")));
+                        displayLoginMenu();
+                    }
                     break;
                 case 3:
                     break;
@@ -73,14 +78,18 @@ public class Utils {
                 case 2:
                     if (currentUser.authenticateRequest()) {
                         System.out.print("How much money do you want to deposit (max. " + currentUser.getDepositLimit() + "): ");
-                        currentUser.deposit(scanner.nextLine(), currentUser.getDepositLimit());
+                        if (currentUser.deposit(scanner.nextLine(), currentUser.getDepositLimit())) {
+                            System.out.println("Success!\n");
+                        }
                     }
                     displayUserMenu();
                     break;
                 case 3:
                     if (currentUser.authenticateRequest()) {
                         System.out.print("How much money do you want to withdraw (max. " + currentUser.getWithdrawLimit() + "): ");
-                        currentUser.withdraw(scanner.nextLine(), currentUser.getWithdrawLimit());
+                        if (currentUser.withdraw(scanner.nextLine(), currentUser.getWithdrawLimit())) {
+                            System.out.println("Success!\n");
+                        }
                     }
                     displayUserMenu();
                     break;

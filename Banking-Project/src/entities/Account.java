@@ -24,30 +24,35 @@ public class Account extends User {
         this.withdrawLimit = Double.parseDouble(withdrawLimit);
     }
 
-    public void deposit(String amount, double depositLimit) {
+    public boolean deposit(String amount, double depositLimit) {
         if (parseDepositValues(amount)) {
             double value = Double.parseDouble(amount);
             if (value <= depositLimit) {
                 this.balance += value;
-                System.out.println("Success\n");
+                return true;
             } else {
                 System.out.println("Failed to deposit! The amount is over the limit!\n");
+                return false;
             }
         } else {
             System.out.println("Invalid amount entered!\n");
+            return false;
         }
     }
 
-    public void withdraw(String amount, double withdrawLimit) {
+    public boolean withdraw(String amount, double withdrawLimit) {
         if (parseDepositValues(amount)) {
             double value = Double.parseDouble(amount);
             if (value <= this.balance && value <= withdrawLimit) {
                 this.balance -= value;
+                return true;
             } else {
                 System.out.println("Failed to withdraw! The amount is over the limit!\n");
+                return false;
             }
         } else {
             System.out.println("Invalid amount entered!\n");
+            return false;
         }
     }
 
@@ -83,7 +88,7 @@ public class Account extends User {
                 if (Double.parseDouble(amount) > getBalance()) {
                     System.out.println("Error! Insufficient funds on your bank account. Please try again.\n");
                 } else {
-                    System.out.println("Transferring " + amount + " to " + account.getUsername() + "...");
+                    System.out.println("Transferring " + amount + " from " + getUsername() + " to " + account.getUsername() + "...\n");
                     withdraw(amount, Double.MAX_VALUE);
                     account.deposit(amount, Double.MAX_VALUE);
                 }
