@@ -54,6 +54,7 @@ public class Utils {
                     }
                     break;
                 case 3:
+                    scanner.close();
                     break;
                 default:
                     System.out.println("No such option exist!\n");
